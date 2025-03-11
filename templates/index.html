@@ -26,7 +26,7 @@
 
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand ms-4" href="{{url_for('index')}}">
+            <a class="navbar-brand ms-4" href="{{url_for('main.index')}}">
                 <img src="{{ url_for('static', filename='images/logo-rmbg.png') }}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">QuizMaster</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -34,10 +34,10 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{{url_for('index')}}">Home</a>
+                <a class="nav-link active" aria-current="page" href="{{url_for('main.index')}}">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('quiz') }}">Quiz</a>
+                <a class="nav-link" href="{{ url_for('main.quiz') }}">Quiz</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="leaderboard.html">Leaderboard</a>
@@ -49,9 +49,9 @@
               <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
             {% if logged_in %}  
-            <a href="{{url_for('logout')}}" class="btn btn-danger m-2">logout</a>
+            <a href="{{url_for('main.logout')}}" class="btn btn-danger m-2">logout</a>
             {% else %}
-            <a href="{{url_for('login')}}" class="btn btn-primary m-2">Login</a>
+            <a href="{{url_for('main.login')}}" class="btn btn-primary m-2">Login</a>
             {% endif %}
           </div>
         </div>
@@ -61,11 +61,11 @@
         <h1 class="display-5 fw-bold my-2">Welcome {% if logged_in %}{{ current_user.full_name.split(" ")[0] }}{% else %} to Quiz Master {% endif %}</h1>
         <p class="lead fs-3">Challenge minds, test knowledge, and master quizzes — Quiz Master empowers brilliance!</p>
         <div class="d-inline-flex gap-2 mb-5">
-            <a href="{{url_for('quiz')}}" class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill">Take a Quiz</a>
+            <a href="{{url_for('main.quiz')}}" class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill">Take a Quiz</a>
             {% if logged_in %}
-            <a href="{{url_for('profile')}}"  class="btn btn-outline-secondary btn-lg px-4 rounded-pill">Profile</a>
+            <a href="{{url_for('main.profile')}}"  class="btn btn-outline-secondary btn-lg px-4 rounded-pill">Profile</a>
             {% else %}
-            <a href="{{url_for('signup')}}" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">Sign Up</a>
+            <a href="{{url_for('main.signup')}}" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">Sign Up</a>
             {% endif %}
         </div>
     </div>
@@ -74,31 +74,31 @@
         <h1 class="display-6 text-center my-5">Leaderboard</h1>
         <div class="row">
           <div class="col-lg-4 position-relative">
-            <img src="{{ url_for('static', filename='images/img_avatar.png') }}" class="img-fluid" width="150" height="150" alt="">
+            <img src="{{ url_for('main.static', filename='images/img_avatar.png') }}" class="img-fluid" width="150" height="150" alt="">
             <span class="position-absolute top-0 start-90 translate-middle badge rounded-pill bg-success fs-6">
               1
             </span>
             <h2 class="fw-normal">{{leaderboard[0][0]}}</h2>
             <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
-            <p><a class="btn btn-secondary" name="self-profile" value="false" href="{{url_for('profile', name=leaderboard[0][0])}}">View Profile</a></p>
+            <p><a class="btn btn-secondary" name="self-profile" value="false" href="{{url_for('main.profile', name=leaderboard[0][0])}}">View Profile</a></p>
           </div>
           <div class="col-lg-4 position-relative">
-            <img src="{{ url_for('static', filename='images/img_avatar.png') }}" class="img-fluid" width="150" height="150" alt="">
+            <img src="{{ url_for('main.static', filename='images/img_avatar.png') }}" class="img-fluid" width="150" height="150" alt="">
             <span class="position-absolute top-0 start-90 translate-middle badge rounded-pill bg-success fs-6">
               2
             </span>
             <h2 class="fw-normal">{{leaderboard[1][0]}}</h2>
             <p>Another exciting bit of representative placeholder content. This time, we've moved on to the second column.</p>
-            <p><a class="btn btn-secondary" name="self-profile" value="false" href="{{url_for('profile',name= leaderboard[1][0])}}">View Profile</a></p>
+            <p><a class="btn btn-secondary" name="self-profile" value="false" href="{{url_for('main.profile',name= leaderboard[1][0])}}">View Profile</a></p>
           </div>
           <div class="col-lg-4 position-relative">
-            <img src="{{ url_for('static', filename='images/img_avatar.png') }}" class="img-fluid" width="150" height="150" alt="">
+            <img src="{{ url_for('main.static', filename='images/img_avatar.png') }}" class="img-fluid" width="150" height="150" alt="">
             <span class="position-absolute top-0 start-90 translate-middle badge rounded-pill bg-success fs-6">
               3
             </span>
             <h2 class="fw-normal">{{leaderboard[2][0]}}</h2>
             <p>And lastly this, the third column of representative placeholder content.</p>
-            <p><a class="btn btn-secondary" name="self-profile" value="false" href="{{url_for('profile', name=leaderboard[2][0])}}">View Profile</a></p>
+            <p><a class="btn btn-secondary" name="self-profile" value="false" href="{{url_for('main.profile', name=leaderboard[2][0])}}">View Profile</a></p>
           </div>
         </div>
     </div>
@@ -106,7 +106,7 @@
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
       <div class="col-md-4 d-flex align-items-center">
         <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
-          <img src="{{ url_for('static', filename='images/logo-rmbg.png') }}" class="image-fluid ms-4" width="30" height="30" alt="">
+          <img src="{{ url_for('main.static', filename='images/logo-rmbg.png') }}" class="image-fluid ms-4" width="30" height="30" alt="">
         </a>
         <span class="mb-3 mb-md-0 text-body-secondary">© 2024 QuizMaster, Inc</span>
       </div>
