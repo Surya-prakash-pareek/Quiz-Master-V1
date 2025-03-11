@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Master</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+        body {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand ms-4" href="{{url_for('index')}}">
+                <img src="{{ url_for('static', filename='images/logo-rmbg.png') }}" alt="Logo" width="30" height="30"
+                    class="d-inline-block align-text-top me-2">QuizMaster</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{url_for('index')}}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('quiz')}}">Quiz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Leaderboard</a>
+                    </li>
+
+                </ul>
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                {% if logged_in %}
+                <a href="{{url_for('logout')}}" class="btn btn-danger m-2">logout</a>
+                {% else %}
+                <a href="{{url_for('login')}}" class="btn btn-primary m-2">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <h1 class="display-4 text-center my-5">{{ user.full_name.split(" ")[0] }}'s Profile</h1>
+    {% if logged_in and name==""%}
+    <div class="container text-center">
+        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-primary">Edit</button>
+            <button type="button" class="btn btn-outline-danger">Delete</button>
+            
+          </div>
+    </div>
+    {% endif %}
+    <div class="user-info">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col">
+                    <img src="{{ url_for('static', filename='images/img_avatar.png') }}" width="250" height="250" alt="">
+                    <h2 class="fs-3 fw-bold">{{ user.full_name.split(" ")[0] }}</h2>
+                </div>
+                <div class="col">
+                    <h2> {{ user.full_name }}</h2>
+                    <p class="fs-5"><i class="bi bi-gender-ambiguous"></i> {{ user.gender }}</p>
+                    <p class="fs-5"><i class="bi bi-mortarboard-fill"></i> {{user.qualification}}</p>
+                    <p class="fs-5"><i class="bi bi-file-earmark-person"></i>{% if user.bio != None %} {{user.bio}}
+                        {% else %} No bio {% endif %}</p>
+                </div>
+            </div>
+        </div>
+        <hr class="my-5">
+
+        <div class="container text-center">
+            <div class="row">
+                <div class="col">
+                    <h3>Quiz attended by @{{ user.full_name.split(" ")[0] }}</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Quiz</th>
+                                <th scope="col">Marks</th>
+                                <th scope="col">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in quiz %}
+                            <tr>
+                                <th scope="row">{{ i.id }}</th>
+                                <td>{{i.quiz_title}}</td>
+                                <td>{{user.scores[i.id-1].total_score}}</td>
+                                <td>{{user.scores[i.id-1].time_stamp_of_attempt}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col">
+                    <h3>@{{ user.full_name.split(" ")[0] }}'s Performence</h3>
+                    <img src="../static/piechart.png" width="450" height="450" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <div class="col-md-4 d-flex align-items-center">
+            <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+                <img src="{{ url_for('static', filename='images/logo-rmbg.png') }}" class="image-fluid ms-4" width="30" height="30" alt="">
+            </a>
+            <span class="mb-3 mb-md-0 text-body-secondary">© 2024 QuizMaster, Inc</span>
+        </div>
+
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+            <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-twitter me-2"></i></a></li>
+            <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-instagram me-2"></i></a></li>
+            <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-facebook me-4"></i></a></li>
+        </ul>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
