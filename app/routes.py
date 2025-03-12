@@ -91,3 +91,62 @@ def signup():
         db.session.add(user)
         db.session.commit()
         return redirect(url_for("login"))
+    
+
+@main.route("/admin-dashboard/add-quiz/<int:chapter_id>", methods=["GET", "POST"])
+def add_quiz(chapter_id):
+    if request.method == "GET":
+        quizzes = Quiz.query.filter_by(chapter_id=chapter_id).all()
+        return render_template("admin-add-quiz.html", quizzes=quizzes, logged_in=session.get('logged_in'), username=session.get('username'), chapter_id=chapter_id)
+
+@main.route('/new-quiz/<int:chapter_id>', methods=['GET', 'POST'])
+def new_quiz(chapter_id):
+    if request.method == 'GET':
+        return render_template('new_quiz.html', logged_in=session.get('logged_in'), username=session.get('username'), chapter_id=chapter_id)
+    elif request.method == 'POST':
+        quiz_title = request.form['quiz_title']
+        remarks = request.form['remarks']
+        date_of_quiz_str = request.form['date_of_quiz']
+        date_of_quiz = datetime.strptime(date_of_quiz_str, "%Y-%m-%d").date()
+        duration = request.form['duration']
+        index = 1
+        quiz_id = len(Quiz.query.all()) + 1
+        while f"new_question_{index}" in request.form:
+            new_question = request.form[f'new_question_{index}']
+            option1 = request.form[f'option1_{index}']
+            option2 = request.form[f'option2_{index}']
+            option3 = request.form[f'option3_{index}']
+            option4 = request.form[f'option4_{index}']
+            correct_answer_index = request.form.get(f'correct_option_{index}')
+
+            if correct_answer_index == "1":
+                correct_answer = option1
+            elif correct_answer_index == "2":
+                correct_answer = option2
+            elif correct_answer_index == "3":
+                correct_answer = option3
+            elif correct_answer_index == "4":
+                correct_answer = option4
+            else:
+                correct_answer = ""
+
+            question = Questions(
+                question=new_question,
+                option1=option1,
+                option2=option2,
+                option3=option3,
+                option4=option4,
+                correct_answer=correct_answer,
+                que_no=+ index,
+                quiz_id=quiz_id
+            )
+
+            db.session.add(question)
+            index += 1
+            
+            
+        quiz = Quiz(quiz_title=quiz_title, chapter_id=chapter_id, remarks=remarks, date_of_quiz=date_of_quiz, time_duration=duration, total_questions=index)
+        db.session.add(quiz)
+        db.session.commit()
+
+    return redirect(url_for('add_quiz', chapter_id=chapter_id))
