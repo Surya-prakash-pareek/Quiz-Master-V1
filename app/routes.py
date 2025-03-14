@@ -261,45 +261,66 @@ def quiz():
 @main.route("/profile/<name>")
 @main.route("/profile")
 def profile(name=""):
-    if session.get('logged_in') and name=="":
+    if session.get('logged_in') and name == "":
         user = User.query.filter_by(username=session.get('username')).first()
-    elif name!="":
+    elif name != "":
         user = User.query.filter_by(full_name=name).first()
     else:
         user = None
-    quiz = []
-    for i in user.scores:
-        quiz.append(Quiz.query.filter_by(id=i.quiz_id).first())
+
+    if not user:
+        return render_template("profile.html", logged_in=session.get('logged_in'), username=session.get('username'))
+
+    # Fetch all quizzes that the user has taken
+    quiz_dict = {q.id: q for q in Quiz.query.all()}  # Dictionary mapping quiz_id to Quiz object
+
     labels = []
     sizes = []
-    score = db.session.query(Scores.quiz_id, func.sum(Scores.total_score)).filter(Scores.user_id == user.id).group_by(Scores.quiz_id).all()
     
+    # Fetch scores grouped by quiz_id
+    scores = db.session.query(Scores.quiz_id, func.sum(Scores.total_score)).filter(Scores.user_id == user.id).group_by(Scores.quiz_id).all()
     
-    scores_table = {'quiz_title':[], 'Marks':[], 'Time':[]}
-    if score:
-        for i in score:
-            
-            labels.append(quiz[i[0]-1].quiz_title)
-            
-            sizes.append(i[1])
-        colors = [f'#{random.randint(0, 0xFFFFFF):06x}' for _ in sizes]
-        explode = [0.1 if size == max(sizes) else 0 for size in sizes]
+    scores_table = {'quiz_title': [], 'Marks': [], 'Time': []}
 
-        plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', explode=explode, shadow=True, startangle=140)
-        if os.path.exists("app/static/images/piechart.png"):
-            os.remove("app/static/images/piechart.png")
-            plt.clf()
+    if scores:
+        for quiz_id, total_score in scores:
+            if quiz_id in quiz_dict:  # Ensure quiz exists in dictionary
+                labels.append(quiz_dict[quiz_id].quiz_title)
+                sizes.append(total_score)
+
+        # Generate pie chart only if there are valid sizes
+        if sizes:
+            colors = [f'#{random.randint(0, 0xFFFFFF):06x}' for _ in sizes]
+            explode = [0.1 if size == max(sizes) else 0 for size in sizes]
+
             plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', explode=explode, shadow=True, startangle=140)
-            plt.savefig("app/static/images/piechart.png")
-        else:
-            plt.savefig("app/static/images/piechart.png") 
-            
-        print(labels, sizes)
-        for i in user.scores:
-            scores_table['quiz_title'].append(Quiz.query.filter_by(id=i.quiz_id).first().quiz_title)
-            scores_table['Marks'].append(str(i.total_score))
-            scores_table['Time'].append(str(i.time_stamp_of_attempt))
-    return render_template("profile.html", logged_in=session.get('logged_in'), username=session.get('username'), leaderboard_user=user, user=user, name=name, quiz=quiz, scores_table=scores_table)
+
+            pie_chart_path = "app/static/images/piechart.png"
+            if os.path.exists(pie_chart_path):
+                os.remove(pie_chart_path)
+                plt.clf()
+                plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', explode=explode, shadow=True, startangle=140)
+
+            plt.savefig(pie_chart_path)
+
+        for score in user.scores:
+            quiz_entry = quiz_dict.get(score.quiz_id)  # Fetch quiz object safely
+            if quiz_entry:
+                scores_table['quiz_title'].append(quiz_entry.quiz_title)
+                scores_table['Marks'].append(str(score.total_score))
+                scores_table['Time'].append(str(score.time_stamp_of_attempt))
+
+    return render_template(
+        "profile.html", 
+        logged_in=session.get('logged_in'), 
+        username=session.get('username'), 
+        leaderboard_user=user, 
+        user=user, 
+        name=name, 
+        quiz=list(quiz_dict.values()), 
+        scores_table=scores_table
+    )
+
 
 @main.route('/delete-subject/<int:subject_id>')
 def delete_subject(subject_id):
@@ -312,6 +333,13 @@ def delete_subject(subject_id):
 def delete_chapter(chapter_id):
     chapter = Chapter.query.get(chapter_id)
     db.session.delete(chapter)
+    db.session.commit()
+    return redirect(url_for('main.admin_dash'))
+
+@main.route('/delete-quiz/<int:quiz_id>')
+def delete_quiz(quiz_id):
+    quiz = Quiz.query.get(quiz_id)
+    db.session.delete(quiz)
     db.session.commit()
     return redirect(url_for('main.admin_dash'))
 
