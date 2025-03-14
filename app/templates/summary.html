@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Master</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        body {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .main-section {
+            animation: fadeIn 0.3s ease-in-out;
+            
+            background-size: cover;
+            min-height: 100vh;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand ms-4" href="{{url_for('main.admin_dash')}}">
+                <img src="{{ url_for('static', filename='images/logo-rmbg.png') }}" alt="Logo" width="30" height="30"
+                    class="d-inline-block align-text-top me-2">QuizMaster</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{url_for('main.admin_dash')}}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.summary') }}">Summary</a>
+                    </li>
+
+                </ul>
+                <form class="d-flex" role="search" action="{{url_for('main.admin_dash')}}" method="POST">
+                    <input type="hidden" name="form_type" value="search">
+                    <input name="search" class="form-control me-2" type="search" placeholder="Search Subjects"
+                        aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                {% if logged_in %}
+                <a href="{{url_for('main.logout')}}" class="btn btn-danger m-2">logout</a>
+                {% else %}
+                <a href="{{url_for('main.login')}}" class="btn btn-primary m-2">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="main-section">
+
+        <div class="container px-4 py-5" id="featured-3">
+            <h2 class="pb-2 border-bottom">Quiz Summary</h2>
+            <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+                <div class="feature col">
+                    <div
+                        class="feature-icon d-inline-flex align-items-center justify-content-center  bg-gradient fs-2 mb-3">
+                        <h3 class="fs-2 text-body-emphasis">{{(users | length) - 1}}</h3>
+                    </div>
+                    <h3 class="fs-2 text-body-emphasis">Total Users</h3>
+                    <p>Total number of registered users who have signed up in the app.</p>
+
+                </div>
+                <div class="feature col">
+                    <div
+                        class="feature-icon d-inline-flex align-items-center justify-content-center  bg-gradient fs-2 mb-3">
+                        <h3 class="fs-2 text-body-emphasis">{{ scores | length}}</h3>
+                    </div>
+                    <h3 class="fs-2 text-body-emphasis">Total Quiz Attempts</h3>
+                    <p>Total number of times quizzes have been attempted by all users.</p>
+
+                </div>
+                <div class="feature col">
+                    <div
+                        class="feature-icon d-inline-flex align-items-center justify-content-center  bg-gradient fs-2 mb-3">
+                        <h3 class="fs-2 text-body-emphasis">{{ most_popular_quiz.quiz_title}}</h3>
+                    </div>
+                    <h3 class="fs-2 text-body-emphasis">Most Popular Quiz</h3>
+                    <p>{{most_popular_quiz.remarks}}</p>
+
+                </div>
+
+            </div>
+        <div class="image-section container-fluid align-items-center ">
+            <img src="{{ url_for('static', filename='images/barchart.png') }}"  alt="">
+        </div>
+        </div>
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+            <div class="col-md-4 d-flex align-items-center">
+                <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+                    <img src="{{ url_for('static', filename='images/logo-rmbg.png') }}" class="image-fluid ms-4"
+                        width="30" height="30" alt="">
+                </a>
+                <span class="mb-3 mb-md-0 text-body-secondary">© 2024 QuizMaster, Inc</span>
+            </div>
+
+            <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+                <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-twitter me-2"></i></a></li>
+                <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-instagram me-2"></i></a></li>
+                <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-facebook me-4"></i></a></li>
+            </ul>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+</body>
+
+</html>

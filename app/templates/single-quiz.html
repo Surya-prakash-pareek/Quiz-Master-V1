@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Master</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        body {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .list-group-item {
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand ms-4" href="{{url_for('main.index')}}">
+                <img src="{{ url_for('static', filename='images/logo-rmbg.png') }}" alt="Logo" width="30" height="30"
+                    class="d-inline-block align-text-top me-2">QuizMaster</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{url_for('main.index')}}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Quiz</a>
+                    </li>
+                    
+
+                </ul>
+                
+                {% if logged_in %}
+                <a href="{{url_for('main.logout')}}" class="btn btn-danger m-2">logout</a>
+                {% else %}
+                <a href="{{url_for('main.login')}}" class="btn btn-primary m-2">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% if user.is_admin == False %}
+    <h1 class="display-4 text-center my-5">{{quiz.quiz_title}}</h1>
+    <p class="fs-5 text-center">{{quiz.remarks}}</p>
+    <div class="container">
+        <div class="d-flex justify-content-between">
+            <span class="fs-6">Date: {{quiz.date_of_quiz}}</span>
+            <span class="fs-6">Duration: {{quiz.time_duration}} min</span>
+        </div>
+        <div class="questions my-3">
+            <form action="{{url_for('main.start_quiz', quiz_id=quiz.id)}}" method="POST">
+                {% for question in questions %}
+                <div class="card my-3">
+                    <div class="card-header">
+                        Que. {{question.que_no}} {{question.question}}
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="{{question.que_no}}choice"
+                                    id="{{question.que_no}}1" value="{{question.option1}}" {% if
+                                    question.option1==selected_answer[question.que_no] %} checked {% endif %}>
+                                <label class="form-check-label" for="{{question.que_no}}1" {% if
+                                    question.option1==question.correct_answer and submitted %}
+                                    style="color:green; font-weight: bold;" {% elif question.option1
+                                    !=question.correct_answer and submitted %} style="color:red;" {% else %}
+                                    style="color:black;" {% endif %}>
+
+                                    {{question.option1}}
+                                </label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="{{question.que_no}}choice"
+                                    id="{{question.que_no}}2" value="{{question.option2}}" {% if
+                                    question.option2==selected_answer[question.que_no] %} checked {% endif %}>
+                                <label class="form-check-label" for="{{question.que_no}}2" {% if
+                                    question.option2==question.correct_answer and submitted %}
+                                    style="color:green; font-weight: bold;" {% elif question.option2
+                                    !=question.correct_answer and submitted %} style="color:red;" {% else %}
+                                    style="color:black;" {% endif %}>
+                                    {{question.option2}}
+                                </label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="{{question.que_no}}choice"
+                                    id="{{question.que_no}}3" value="{{question.option3}}" {% if
+                                    question.option3==selected_answer[question.que_no] %} checked {% endif %}>
+                                <label class="form-check-label" for="{{question.que_no}}3" {% if
+                                    question.option3==question.correct_answer and submitted %}
+                                    style="color:green; font-weight: bold;" {% elif question.option3
+                                    !=question.correct_answer and submitted %} style="color:red;" {% else %}
+                                    style="color:black;" {% endif %}>
+                                    {{question.option3}}
+                                </label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="{{question.que_no}}choice"
+                                    id="{{question.que_no}}4" value="{{question.option4}}" {% if
+                                    question.option4==selected_answer[question.que_no] %} checked {% endif %}>
+                                <label class="form-check-label" for="{{question.que_no}}4" {% if
+                                    question.option4==question.correct_answer and submitted %}
+                                    style="color:green; font-weight: bold;" {% elif question.option4
+                                    !=question.correct_answer and submitted %} style="color:red;" {% else %}
+                                    style="color:black;" {% endif %}>
+                                    {{question.option4}}
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary m-2">Submit</button>
+            </form>
+            {% if total_score!=None %}
+            <p>Your Score : {{total_score}}</p>
+            {% endif %}
+            {% else %}
+            <form action="{{url_for('main.start_quiz', quiz_id=quiz.id)}}" method="POST">
+                <input type="hidden" name="_method" value="PUT">
+                <div class="d-flex container justify-content-center">
+                    <input type="text" class="display-4 text-center my-5" name="quiz_title" value="{{quiz.quiz_title}}"
+                        style="border: none; outline: none;"></input>
+                </div>
+                <div class="d-flex container justify-content-center">
+                    <input type="text" class="fs-5 text-center" name="remarks" value="{{quiz.remarks}}"
+                        style="border: none; outline: none;"></input>
+                </div>
+                <div class="container">
+                    <div class="d-flex justify-content-between">
+                        <input type="text" class="fs-6" name="date_of_quiz" value="Date: {{quiz.date_of_quiz}}"
+                            style="border: none; outline: none;"></input>
+                        <span>Duration: <input type="text" class="fs-6" name="duration" value="{{quiz.time_duration}}"
+                                style="border: none; outline: none; width: 5%;"></input>min</span>
+                    </div>
+                    <div class="questions my-3">
+                        {% for question in questions %}
+                        <div class="card my-3">
+                            <div class="card-header">
+                                <span class="fs-6">Que. {{question.que_no}}</span>
+                                <input type="text" class="fs-6" value="{{question.question}}"
+                                    style="border: none; outline: none; width: 90%; background-color: transparent;"></input>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="{{question.que_no}}choice"
+                                            id="{{question.que_no}}1" value="{{question.option1}}" {% if
+                                            question.option1==selected_answer[question.que_no] %} checked {% endif %}>
+                                        <input type="text" value="{{question.option1}}"
+                                            style="border: none; outline: none; width: 90%; background-color: transparent;">
+                                        </input>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="{{question.que_no}}choice"
+                                            id="{{question.que_no}}2" value="{{question.option2}}" {% if
+                                            question.option2==selected_answer[question.que_no] %} checked {% endif %}>
+                                        <input type="text" value="{{question.option2}}"
+                                            style="border: none; outline: none; width: 90%; background-color: transparent;">
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="{{question.que_no}}choice"
+                                            id="{{question.que_no}}3" value="{{question.option3}}" {% if
+                                            question.option3==selected_answer[question.que_no] %} checked {% endif %}>
+                                        <input type="text" value="{{question.option3}}"
+                                            style="border: none; outline: none; width: 90%; background-color: transparent;">
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="{{question.que_no}}choice"
+                                            id="{{question.que_no}}4" value="{{question.option4}}" {% if
+                                            question.option4==selected_answer[question.que_no] %} checked {% endif %}>
+                                        <input type="text" value="{{question.option4}}"
+                                            style="border: none; outline: none; width: 90%; background-color: transparent;">
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        {% endfor %}
+                        {% if user.is_admin %}
+                        <div name="add_question" class="questions my-3" id="cardList"></div>
+                        <button type="button" class="px-3 btn btn-outline-secondary m-2 rounded-pill"
+                            style="display: block;" onclick="addCard()">+</button>
+                        <button type="submit" class="container-fluid btn btn-primary m-2 px-5">Save</button>
+
+                        {% endif %}
+            </form>
+            {% endif %}
+
+        </div>
+    </div>
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <div class="col-md-4 d-flex align-items-center">
+            <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+                <img src="{{ url_for('static', filename='images/logo-rmbg.png') }}" class="image-fluid ms-4" width="30"
+                    height="30" alt="">
+            </a>
+            <span class="mb-3 mb-md-0 text-body-secondary">© 2024 QuizMaster, Inc</span>
+        </div>
+
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+            <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-twitter me-2"></i></a></li>
+            <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-instagram me-2"></i></a></li>
+            <li class="ms-3"><a class="text-body-secondary" href="#"><i class="bi bi-facebook me-4"></i></a></li>
+        </ul>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script>
+        let questionCount = 0;  // Track question numbers
+
+        function addCard() {
+            questionCount++;
+
+            const li = document.createElement("li");
+            li.classList.add("list-group-item");
+
+            const cardHTML = `
+    <div class="card my-3">
+        <div class="card-header">
+            <span class="fs-6">Que. ${questionCount}</span> 
+            <input name="new_question_${questionCount}" type="text" class="fs-6" style="border: none; outline: none; width: 90%; background-color: transparent;">
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_option_${questionCount}" value="1">
+                    <input type="text" name="option1_${questionCount}" style="border: none; outline: none; width: 90%; background-color: transparent;">      
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_option_${questionCount}" value="2">
+                    <input type="text" name="option2_${questionCount}" style="border: none; outline: none; width: 90%; background-color: transparent;">   
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_option_${questionCount}" value="3">
+                    <input type="text" name="option3_${questionCount}" style="border: none; outline: none; width: 90%; background-color: transparent;">   
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_option_${questionCount}" value="4">
+                    <input type="text" name="option4_${questionCount}" style="border: none; outline: none; width: 90%; background-color: transparent;">   
+                </div>
+            </li>
+        </ul>
+    </div>`;
+
+            li.innerHTML = cardHTML;
+            document.getElementById("cardList").appendChild(li);
+        }
+
+    </script>
+</body>
+
+</html>
