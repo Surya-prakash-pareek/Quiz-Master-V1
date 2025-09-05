@@ -34,8 +34,11 @@ This project was designed to strengthen full-stack development skills, including
 
 ---
 Screenshots:
-![Home Page](quiz_demo.png)
-![Quiz Page](home_demo.png)
+**Home Page**
+![Home Page](home_demo.png)
+
+**Quiz Page**
+![Quiz Page](quiz_demo.png)
 
 ---
 
