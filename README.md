@@ -34,8 +34,8 @@ This project was designed to strengthen full-stack development skills, including
 
 ---
 Screenshots:
-![Home Page]((https://quiz-master-qydp.onrender.com/))
-![Quiz Page](https://quiz-master-qydp.onrender.com/all-quiz)
+![Home Page](quiz_demo.png)
+![Quiz Page](home_demo.png)
 
 ---
 
