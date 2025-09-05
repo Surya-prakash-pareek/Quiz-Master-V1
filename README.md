@@ -33,11 +33,16 @@ This project was designed to strengthen full-stack development skills, including
 - Debugging and deploying real-world web applications  
 
 ---
+Screenshots:
+![Home Page]((https://quiz-master-qydp.onrender.com/))
+![Quiz Page](https://quiz-master-qydp.onrender.com/all-quiz)
+
+---
 
 ## 📂 Demo & Repo Links
 
-- **Live Demo:** [link](https://quiz-master-qydp.onrender.com/)  
-- **GitHub Repository:** [link](https://github.com/Surya-prakash-pareek/Quiz-Master-V1)
+- **Live Demo:** [Link](https://quiz-master-qydp.onrender.com/)  
+- **GitHub Repository:** [Link](https://github.com/Surya-prakash-pareek/Quiz-Master-V1)
 
 ---
 
